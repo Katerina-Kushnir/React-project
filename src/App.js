@@ -1,14 +1,17 @@
 import React from 'react';
-import { AppRouter } from './Components/AppRouter';
-import { useSelector } from 'react-redux';
-import { isRegistered } from './Store/App/selector';
-import { RegistrationRouter } from './Components/Registration';
 import './App.css';
+import { Routes, Route } from "react-router-dom";
+import Home from './pages/Home/Home';
+import Register from './pages/Register/Register';
 
 export const App = () => {
-  const isUserRegistered = useSelector(isRegistered);
+
   return (
-    isUserRegistered ? <AppRouter /> : <RegistrationRouter />
+    <>
+      <Routes>
+        <Route path="/" element={<Register />} />
+        <Route path="/home" element={<Home />} />
+      </Routes>
+    </>
   );
 }
-

@@ -1,5 +1,3 @@
-export const selectTodoList = (state) => {
-    return state.todo.items;
+export const selectWeather = (state) => {
+    return state.weather;
 }
-
-export const isRegistered = (state) => state.app.isRegistered;

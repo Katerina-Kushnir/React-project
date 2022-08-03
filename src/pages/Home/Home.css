@@ -1,0 +1,48 @@
+.css-5nwj3y {
+    justify-content: space-between;
+    padding: 6px 30px;
+    background-color: lavender;
+    margin-bottom: 30px;
+}
+.css-s92b0l {
+    padding: 6px 0;
+}
+#root {
+    height: 100%;
+    position: relative;
+    width: 100%;
+}
+.weatherSearch {
+    display: flex;
+    margin-left: 20px;
+    justify-content: flex-end;
+}
+.css-1u3bzj6-MuiFormControl-root-MuiTextField-root {
+    margin-top: 10px !important;
+}
+.css-1e6y48t-MuiButtonBase-root-MuiButton-root {
+    align-items: flex-end !important;
+    margin-right: 50px;
+}
+.css-1lojo64-MuiTypography-root {
+    text-align: center;
+}
+.css-azeo8y-MuiAvatar-root {
+    margin-right: 20px;
+}
+
+.homePage {
+    position: relative;
+    z-index: 1;
+}
+.homePageBg {
+    background-image: url('../../images/sky.jpg');
+    background-repeat: no-repeat;
+    background-position: center top;
+    background-size: cover;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    z-index: -1;
+    opacity: .6;
+}

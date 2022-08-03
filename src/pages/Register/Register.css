@@ -1,0 +1,27 @@
+.registerForma {
+    width: 300px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding-top: 150px;
+}
+.css-1t6e9jv-MuiCardActions-root {
+    justify-content: space-between;
+    padding: 4px 26px 16px !important;
+}
+.css-16m3jxf-MuiTypography-root {
+    font-size: 2rem;
+    margin-bottom: 0.6em !important;
+    font-size: 18px !important;
+}
+.registerPage {
+    background-image: url('../../images/sky.jpg');
+    background-repeat: no-repeat;
+    background-position: center top;
+    background-size: cover;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+}
