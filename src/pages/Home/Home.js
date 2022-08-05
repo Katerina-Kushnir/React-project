@@ -1,10 +1,10 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import './Home.css';
-import { selectWeather } from "../../Store/App/selector";
-import { fetchWeatherByName } from "../../Store/App/reduser";
+import { weatherSelector } from "../../Store/App/selector";
+import { fetchSport, fetchWeatherByName, fetchAutocomplete } from "../../Store/App/reduser";
 
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
@@ -43,16 +43,18 @@ function Home() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const getWeather = useSelector(selectWeather);
+    const getWeather = useSelector(weatherSelector);
     const [city, setCity] = useState("");
     const [degree, setDegree] = useState(null);
+    const [favoriteCity, setFavoriteCity] = useState("");
+    const [favoriteSport, setFavoriteSport] = useState([]);
 
     const logoutBtn = () => {
         localStorage.clear();
         navigate('/');
     }
-    const getCity = (e) => {
-        setCity(e.target.value);
+    const getCity = (event) => {
+        setCity(event.target.value);
     }
     const getCityWeather = () => {
         dispatch(fetchWeatherByName(city));
@@ -63,19 +65,69 @@ function Home() {
     const stop = (event) => {
         event.stopPropagation();
     }
-
+    const getFavoriteCity = (event) => {
+        setFavoriteCity(event.target.value);
+    }
+    const addCity = () => {
+        dispatch(fetchWeatherByName(favoriteCity));
+        console.log("Status", getWeather.status);
+    }
+    const addFavoriteSport = (tournament) => {
+        console.log("Sport favorite", tournament)
+        setFavoriteSport([...favoriteSport, tournament]);
+        console.log("Favorite:", favoriteSport);
+    }
+    const getCityAutocomplete = (e) => {
+        dispatch(fetchWeatherByName(e.target.textContent));
+        dispatch(fetchSport(e.target.textContent));
+    }
 
     const [anchorEl, setAnchorEl] = React.useState(null);   //MUI
     const open = Boolean(anchorEl);     //MUI
     const handleClick = (event) => {    //MUI
+        event.stopPropagation();
         setAnchorEl(event.currentTarget);
     };
-    const handleClose = () => {         //MUI
+    const handleClose = (event) => {         //MUI
+        event.stopPropagation();
         setAnchorEl(null);
     };
     const [openModal, setOpenModal] = React.useState(false); //MUI
     const handleOpenModal = (event) => { event.stopPropagation(); setOpenModal(true) };    //MUI
     const handleCloseModal = (event) => { event.stopPropagation(); setOpenModal(false) };  //MUI
+
+    useEffect(() => {
+        setDegree("C");
+    }, [])
+
+    useEffect(() => {
+        dispatch(fetchWeatherByName("London"));
+    }, [dispatch])
+
+    useEffect(() => {
+        console.log("Data", getWeather.cityWeather);
+    })
+
+    useEffect(() => {
+        dispatch(fetchSport());
+    }, [dispatch])
+
+    useEffect(() => {
+        console.log("Sport", getWeather.sports);
+    })
+
+    useEffect(() => {
+        dispatch(fetchAutocomplete("Lon"));
+    }, [dispatch])
+
+    useEffect(() => {
+        console.log("Autocomplete", getWeather.sports);
+    })
+
+    useEffect(() => {
+        dispatch(fetchAutocomplete(favoriteCity));
+        console.log("Effect city autocomplete", getWeather.autocompleteCity);
+    }, [favoriteCity])
 
     return (
         <div className="homePage">
@@ -132,19 +184,19 @@ function Home() {
                     transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                     anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                 >
-                    <MenuItem>
+                    {/* <MenuItem>
                         <Avatar /> Profile
-                    </MenuItem>
+                    </MenuItem> */}
                     <MenuItem>
                         <Avatar /> My account
                     </MenuItem>
                     <Divider />
-                    <MenuItem>
+                    {/* <MenuItem>
                         <ListItemIcon>
                             <PersonAdd fontSize="small" />
                         </ListItemIcon>
                         Add another account
-                    </MenuItem>
+                    </MenuItem> */}
 
                     <MenuItem onClick={handleOpenModal}>
                         <ListItemIcon>
@@ -183,18 +235,110 @@ function Home() {
                     </MenuItem>
                 </Menu>
 
-                <div className="weatherSearch">
+                {/* <div className="weatherSearch">
                     <TextField onChange={(e) => getCity(e)} placeholder="Enter your city" name="city" label="Enter your city" size="small" />
-                    <Button variant="text" onClick={() => getCityWeather}>Show weather</Button>
+                    <Button variant="text" onClick={() => getCityWeather()}>Show weather</Button>
+                </div> */}
+
+                <div className="search-city">
+                    <TextField id="outlined-basic" onChange={(e) => getFavoriteCity(e)} label="Search city" variant="outlined" size="small" />
+                    <Button variant="text" onClick={() => addCity()}>Search city</Button>
+                    <div className="auto-city">
+                        {
+                            Array.isArray(getWeather?.autocompleteCity) ? getWeather?.autocompleteCity?.map((city, index) => (
+                                <p key={index} onClick={(e) => getCityAutocomplete(e)} >{city.name.startsWith(favoriteCity) ? city.name : ""}</p>
+                            )) : ""
+                        }
+                    </div>
                 </div>
-                <div className="weather">
-                    <div className="weatherData">Country: {getWeather ? getWeather.cityWeather.location?.country : ""}</div>
-                    <div className="weatherData">Local time: {getWeather ? getWeather.cityWeather.location?.localtime : ""}</div>
-                    <div className="weatherData">Cloud: {getWeather ? getWeather.cityWeather.current?.cloud : ""} <img src={getWeather.cityWeather.current?.condition.icon} /></div>
-                    <div className="weatherData">Temp: {getWeather ? getWeather.cityWeather.current?.temp_c : ""}</div>
-                    Degree Fahrenheit {(degree === "F") ? getWeather.cityWeather.current?.temp_f : ""}
-                    Degree Celsius {(degree === "C") ? getWeather.cityWeather.current?.temp_c : ""}
+                
+                
+
+
+                <div className="home-content">
+
+                <p className="variant-city">Selected city: {getWeather.cityWeather.error ? "City not found" : getWeather.cityWeather ? getWeather.cityWeather.location?.name : ""}, {getWeather.cityWeather.error ? "City not found" : getWeather.cityWeather ? getWeather.cityWeather.location?.country : ""}</p>
+
+                    <div className="weather-day">
+                        <div className="weather-data">Weather in {getWeather ? getWeather.cityWeather.location?.name : ""}, {getWeather ? getWeather.cityWeather.location?.country : ""}</div>
+                        {/* <div className="weather-data">{getWeather ? getWeather.cityWeather.location?.region : ""}</div> */}
+                        {/* <div className="weather-data">Local time: {getWeather ? getWeather.cityWeather.location?.localtime : ""}</div>
+                        <div className="weather-data"><img src={getWeather.cityWeather.current?.condition.icon} /></div>
+                        <div className="weather-data">Temp: {getWeather ? getWeather.cityWeather.current?.temp_c : ""} </div>
+                        Temp f {(degree === "F") ? getWeather.cityWeather.current?.temp_f : ""}
+                        Temp c {(degree === "C") ? getWeather.cityWeather.current?.temp_c : ""}
+                        <div className="weather-data">Wind: {getWeather ? getWeather.cityWeather.current?.wind_mph : ""} </div>
+                        Wind kph {(degree === "kph") ? getWeather.cityWeather.current?.wind_kph : ""}
+                        Wind mph {(degree === "mph") ? getWeather.cityWeather.current?.wind_mph : ""}
+                        <div className="weather-data">Humidity: {getWeather ? getWeather.cityWeather.current?.humidity : ""} </div>
+                        <div className="weather-data">Pressure: {getWeather ? getWeather.cityWeather.current?.pressure_mb : ""} </div>
+                        Pressure mb {(degree === "pressure_mb") ? getWeather.cityWeather.current?.pressure_mb : ""}
+                        Pressure in {(degree === "pressure_in") ? getWeather.cityWeather.current?.pressure_in : ""} */}
+                    </div>
+                        <br/>
+                    <div>
+                        {/* Weater for three days: */}
+                        <div className="days">
+                        {
+                            getWeather ? getWeather.cityWeather.forecast?.forecastday.map((day, index) => (
+                                <div key={day.date + index} className="one-day">
+                                    <div>{day.date}</div>
+                                    <img src={day.day.condition.icon}/>
+                                    <div className="days-temp">
+                                    <div>
+                                        <p>min</p>
+                                        <p>{day.day.mintemp_c}<span>&deg;</span></p>
+                                    </div>
+                                    <div>
+                                        <p>max</p>
+                                        <p>{day.day.maxtemp_c}<span>&deg;</span></p>
+                                    </div>
+                                    </div>
+            
+                                </div>
+                            )) : ""
+                        }
+
+                        </div>
+                        {/* {
+                            getWeather ? getWeather.cityWeather.forecast?.forecastday.map((day, index) => (
+                                <p key={day.date + index}>Date: {day.date}</p>
+                            )) : ""
+                        } */}
+                    </div>
+
+                    {/* <div className="favorite-city">
+                        <TextField id="outlined-basic" onChange={(e) => getFavoriteCity(e)} label="Add city" variant="outlined" size="small"/>
+                        <Button variant="text" onClick={() => addCity()}>Add city</Button>
+
+                        <div className="auto-city">
+                            {
+                                Array.isArray(getWeather?.autocompleteCity) ? getWeather?.autocompleteCity?.map((city, index) => (
+                                    <p key={index} onClick={(e) => getCityAutocomplete(e)} >{ city.name.startsWith(favoriteCity) ? city.name : "" }</p>
+                                )) : ""
+                            }
+                        </div>
+                    </div>
+
+                    { getWeather.cityWeather.error ? "City not found" : getWeather.cityWeather ? getWeather.cityWeather.location?.name : "" } */}
+
+                    <div className="tournament">
+                        {getWeather.sports ? getWeather.sports.football?.map((tournament, index) => (
+                            <div>
+                                <p onClick={() => addFavoriteSport(tournament.tournament)} key={index}>Name: {tournament.tournament} <button type="button">Like</button></p>
+                            </div>
+                        )) : ""}
+                    </div>
+
+                    <div className="favorite-sport">
+                        Favorite sports:
+                        {favoriteSport.map(tournament => (
+                            <div>{tournament}</div>
+                        ))}
+                    </div>
+
                 </div>
+
             </React.Fragment>
         </div>
     );

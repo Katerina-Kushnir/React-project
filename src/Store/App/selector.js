@@ -1,3 +1,4 @@
-export const selectWeather = (state) => {
+export const weatherSelector = (state) => {
     return state.weather;
 }
+

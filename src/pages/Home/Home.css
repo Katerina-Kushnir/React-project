@@ -1,7 +1,7 @@
 .css-5nwj3y {
     justify-content: space-between;
     padding: 6px 30px;
-    background-color: lavender;
+    background: rgba(360, 360, 360, .7);
     margin-bottom: 30px;
 }
 .css-s92b0l {
@@ -12,10 +12,49 @@
     position: relative;
     width: 100%;
 }
-.weatherSearch {
-    display: flex;
+.search-city {
+    display: grid;
     margin-left: 20px;
-    justify-content: flex-end;
+    justify-content: center;
+    grid-template-columns: 300px 120px;
+    grid-template-rows: 50px 1fr;
+}
+.auto-city {
+    background: rgba(360, 360, 360, .8);
+    padding-left: 16px;
+    border-radius: 4px;
+    z-index: 1;
+}
+.home-content {
+    position: absolute;
+    top: 190px;
+    margin: 0 50px;
+}
+.days {
+    display: flex;
+}
+.days > div{
+    width: 160px;
+    text-align: center;
+    padding: 10px 0;
+}
+.days-temp > p {
+    margin: 0 !important;
+    line-height: 1 !important;
+}
+.days-temp {
+    display: flex;
+    justify-content: center
+}
+.days-temp > div{
+    width: 60px;
+}
+.one-day {
+    border-radius: 8px;
+    margin-right: 10px;
+    background: rgba(360, 360, 360, .8);
+    box-shadow: 0px 0px 6px 2px lavender;
+    cursor: pointer;
 }
 .css-1u3bzj6-MuiFormControl-root-MuiTextField-root {
     margin-top: 10px !important;
@@ -23,6 +62,7 @@
 .css-1e6y48t-MuiButtonBase-root-MuiButton-root {
     align-items: flex-end !important;
     margin-right: 50px;
+    color: #454545 !important;
 }
 .css-1lojo64-MuiTypography-root {
     text-align: center;
