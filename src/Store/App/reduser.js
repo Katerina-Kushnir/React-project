@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 
 export const fetchWeatherByName = createAsyncThunk(
-    'http://api.weatherapi.com/v1/current.json?key=80d44e00963f477ca92155142220108&q=London',
+    'http://api.weatherapi.com/v1/current.json',
     async function (city) {
         try {
 
@@ -24,7 +24,7 @@ export const fetchWeatherByName = createAsyncThunk(
 )
 
 export const fetchSport = createAsyncThunk(
-    'https://weatherapi-com.p.rapidapi.com/sports.json?q=London',
+    'https://weatherapi-com.p.rapidapi.com/sports.json',
     async function (city) {
         try {
             const response = await fetch(`https://weatherapi-com.p.rapidapi.com/sports.json?q=London`, {
@@ -61,7 +61,29 @@ export const fetchAutocomplete = createAsyncThunk(
 
             return data;
         } catch (error) {
-            console.log("Search city", error);
+            console.log("Search city Error", error);
+        }
+    }
+)
+
+export const fetchHistoryWeather = createAsyncThunk(
+    'https://weatherapi-com.p.rapidapi.com/history.json',
+    async function (date) {
+        try {
+
+            const response = await fetch(`https://weatherapi-com.p.rapidapi.com/history.json?q=London&dt=${date}&lang=en`, {
+                method: 'GET',
+                headers: {
+                    'X-RapidAPI-Key': 'cdaa531bf2msh3a74fc950af8a77p1387b9jsn048eff83de29',
+                    'X-RapidAPI-Host': 'weatherapi-com.p.rapidapi.com',
+                }
+            });
+
+            const data = await response.json();
+
+            return data;
+        } catch (error) {
+            console.log("History Weather Error", error);
         }
     }
 )
@@ -72,6 +94,7 @@ const weatherApi = createSlice({
         cityWeather: [],
         sports: [],
         autocompleteCity: [],
+        getHistoryWeather: [],
         status: null,
     },
     reducers: {},
@@ -87,6 +110,10 @@ const weatherApi = createSlice({
         [fetchAutocomplete.fulfilled]: (state, action) => {
             console.log("Autocomplete payload", action.payload);
             state.autocompleteCity = action.payload;
+        },
+        [fetchHistoryWeather.fulfilled]: (state, action) => {
+            console.log("History weather payload", action.payload);
+            state.getHistoryWeather = action.payload;
         }
     },
 })

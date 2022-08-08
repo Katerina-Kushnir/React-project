@@ -40,7 +40,7 @@ function Register() {
 
     const register = () => {
         localStorage.setItem("user", JSON.stringify(user));
-        navigate('/')
+        navigate('/home');
     }
     const scrapData = (e) => {
         setUser({ ...user, [e.target.name]: e.target.value })
@@ -59,7 +59,7 @@ function Register() {
                             <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                                 Login to Weather App
                             </Typography>
-                            <TextField onChange={(e) => scrapSignInData(e)} name="email" id="outlined-size-small" size="small" label="Email" variant="outlined" />
+                            <TextField onChange={(e) => scrapSignInData(e)} name="email" id="outlined-size-small" size="small" label="Email" variant="outlined" required/>
                             <TextField
                                 onChange={(e) => scrapSignInData(e)}
                                 name="password"
@@ -69,6 +69,7 @@ function Register() {
                                 label="Password"
                                 type="password"
                                 autoComplete="current-password"
+                                required
                             />
                         </CardContent>
                         <CardActions>
@@ -79,12 +80,12 @@ function Register() {
                     <Card sx={{ minWidth: 275 }}>
                         <CardContent>
                             <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                                Login to Weather App
+                                Register to Weather App
                             </Typography>
-                            <TextField id="outlined-size-small" size="small" label="Name" variant="outlined" />
-                            <TextField sx={{ marginTop: '16px' }} id="outlined-size-small" size="small" label="Surname" variant="outlined" />
-                            <TextField sx={{ marginTop: '16px' }} id="outlined-size-small" size="small" label="Tel" variant="outlined" />
-                            <TextField onChange={(e) => scrapData(e)} sx={{ marginTop: '16px' }} id="outlined-size-small" size="small" label="Email" variant="outlined" name="email"/>
+                            <TextField onChange={(e) => scrapData(e)} id="outlined-size-small" size="small" label="Name" variant="outlined" name="firstname" required/>
+                            <TextField onChange={(e) => scrapData(e)} sx={{ marginTop: '16px' }} id="outlined-size-small" size="small" label="Surname" variant="outlined" name="surname" required/>
+                            <TextField onChange={(e) => scrapData(e)} sx={{ marginTop: '16px' }} id="outlined-size-small" size="small" label="Tel" variant="outlined" name="tel" required/>
+                            <TextField onChange={(e) => scrapData(e)} sx={{ marginTop: '16px' }} id="outlined-size-small" size="small" label="Email" variant="outlined" name="email" required/>
                             <TextField
                                 onChange={(e) => scrapData(e)}
                                 name="password"
@@ -94,6 +95,7 @@ function Register() {
                                 label="Password"
                                 type="password"
                                 autoComplete="current-password"
+                                required
                             />
                         </CardContent>
                         <CardActions>
