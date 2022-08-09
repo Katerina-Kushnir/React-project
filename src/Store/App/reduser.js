@@ -25,9 +25,9 @@ export const fetchWeatherByName = createAsyncThunk(
 
 export const fetchSport = createAsyncThunk(
     'https://weatherapi-com.p.rapidapi.com/sports.json',
-    async function (city) {
+    async function (citySport) {
         try {
-            const response = await fetch(`https://weatherapi-com.p.rapidapi.com/sports.json?q=London`, {
+            const response = await fetch(`https://weatherapi-com.p.rapidapi.com/sports.json?q=${citySport}`, {
                 method: 'GET',
                 headers: {
                     'X-RapidAPI-Key': 'cdaa531bf2msh3a74fc950af8a77p1387b9jsn048eff83de29',

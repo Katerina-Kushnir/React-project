@@ -72,6 +72,9 @@ function Home() {
     const getCityWeather = () => {
         dispatch(fetchWeatherByName(city));
     }
+    // const getSport = () => {
+    //     dispatch(fetchSport(city));
+    // }
     const degrees = (event) => {
         setDegree(event.target.value);
     }
@@ -151,7 +154,7 @@ function Home() {
     })
 
     useEffect(() => {
-        dispatch(fetchSport());
+        dispatch(fetchSport("London"));
     }, [dispatch])
 
     useEffect(() => {
@@ -159,7 +162,7 @@ function Home() {
     })
 
     useEffect(() => {
-        dispatch(fetchAutocomplete("Lon"));
+        dispatch(fetchAutocomplete(""));
     }, [dispatch])
 
     useEffect(() => {
@@ -325,6 +328,7 @@ function Home() {
                             </Stack>
                         </LocalizationProvider>
                     </div>
+
                 </div>
 
 
@@ -334,28 +338,46 @@ function Home() {
                             <p className="variant-city">Selected city: {getWeather.cityWeather.error ? "City not found" : getWeather.cityWeather ? getWeather.cityWeather.location?.name : ""}, {getWeather.cityWeather.error ? "Country not found" : getWeather.cityWeather ? getWeather.cityWeather.location?.country : ""}</p>
                             <BottomNavigationAction label="Favorites" icon={<FavoriteIcon />} onClick={() => addCity(getWeather.cityWeather)} />
                         </div>
-                        
+
                         <div className="myFavoriteCity">
                             <p>My favorite city:</p>
                         </div>
                         <div className="home-content-left-top">
 
                             <div className="weather-day">
-                                <div className="weather-data">
-                                    <p className="weather-data-time">{getWeather ? getWeather.cityWeather.location?.localtime : ""}</p>
+                                <div className="weather-day-left">
+                                    <div className="weather-data">
+                                        <p className="weather-data-time">{getWeather ? getWeather.cityWeather.location?.localtime : ""}</p>
+                                    </div>
+                                    <div className="weather-data">
+                                        <p className="weather-data-city">{getWeather ? getWeather.cityWeather.location?.name : ""}</p>
+                                    </div>
+                                    <div className="weather-data-flex">
+                                        <p className="weather-data-temp">
+                                            {(degree === "F") ? getWeather.cityWeather.current?.temp_f : ""}
+                                            {(degree === "C") ? getWeather.cityWeather.current?.temp_c : ""}
+                                            <span>&deg;</span>
+                                        </p>
+                                        <p className="weather-data-icon">
+                                            <img src={getWeather.cityWeather.current?.condition.icon} />
+                                            <span>{getWeather.cityWeather.current?.condition.text}</span>
+                                        </p>
+                                    </div>
                                 </div>
-                                <div className="weather-data">
-                                    <p className="weather-data-city">{getWeather ? getWeather.cityWeather.location?.name : ""}</p>
-                                </div>
-                                <div className="weather-data-flex">
-                                    <p className="weather-data-temp">
-                                        {(degree === "F") ? getWeather.cityWeather.current?.temp_f : ""}
-                                        {(degree === "C") ? getWeather.cityWeather.current?.temp_c : ""}
+                                <div className="weather-day-right">
+                                    <p className="weather-day-right-data">feelslike............
+                                        {(degree === "F") ? getWeather.cityWeather.current?.feelslike_f : ""}
+                                        {(degree === "C") ? getWeather.cityWeather.current?.feelslike_c : ""}
                                         <span>&deg;</span>
                                     </p>
-                                    <p className="weather-data-icon">
-                                        <img src={getWeather.cityWeather.current?.condition.icon} />
-                                        <span>{getWeather.cityWeather.current?.condition.text}</span>
+                                    <p className="weather-day-right-data">wind speed.....
+                                        {(windSpeed === "kph") ? getWeather.cityWeather.current?.wind_kph + " kph" : ""}
+                                        {(windSpeed === "mph") ? getWeather.cityWeather.current?.wind_mph + " mph" : ""}
+
+                                    </p>
+                                    <p className="weather-day-right-data">pressure...........
+                                        {(pressure === "mb") ? getWeather.cityWeather.current?.pressure_mb + " mb" : ""}
+                                        {(pressure === "in") ? getWeather.cityWeather.current?.pressure_in + " in" : ""}
                                     </p>
                                 </div>
                             </div>
@@ -415,6 +437,73 @@ function Home() {
                                     </div>
                                 )) : ""
                             }
+                        </div>
+
+                        <div className="history-weather">
+                            <div className="history-weather-date">History weather in:
+                                {
+                                    getWeather ? getWeather.getHistoryWeather.forecast?.forecastday.map((day, index) => (
+                                        <div key={day.date + index}>
+                                            <div className="history-weather-data">{day.date}</div>
+                                        </div>
+                                    )) : ""
+                                }
+                            </div>
+                            <div className="history-weather-flex">
+                                <div className="days-temp-history-left">
+                                    <p className="history-weather-name">{getWeather.getHistoryWeather.error ? "History weather not found" : getWeather.getHistoryWeather ? getWeather.getHistoryWeather.location?.name + ", " : ""} {getWeather.getHistoryWeather.error ? "" : getWeather.getHistoryWeather ? getWeather.getHistoryWeather.location?.country : ""}</p>
+                                    {
+                                        getWeather ? getWeather.getHistoryWeather.forecast?.forecastday.map((day, index) => (
+                                            <div key={day.date + index}>
+                                                <div className="days-temp-history">
+                                                    <div className="days-temp-history-col1">
+                                                        <p>
+                                                            {(degree === "F") ? day.day.avgtemp_f : ""}
+                                                            {(degree === "C") ? day.day.avgtemp_c : ""}
+                                                            <span>&deg;</span>
+                                                        </p>
+                                                    </div>
+                                                    <div className="days-temp-history-col2">
+                                                        <img src={day.day.condition.icon} />
+                                                        <p>{day.day.condition.text}</p>
+                                                    </div>
+                                                </div>
+                                                <div className="days-temp-history-wind">
+                                                    <p>wind speed..........
+                                                        {(windSpeed === "kph") ? day.day.maxwind_kph + "kph": ""}
+                                                        {(windSpeed === "mph") ? day.day.maxwind_mph + "mph": ""}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )) : ""
+                                    }
+                                </div>
+                                <div className="days-temp-history-right">
+                                    {
+                                        getWeather ? getWeather.getHistoryWeather.forecast?.forecastday.map((day, index) => (
+                                            <div key={day.date + index}>
+                                                <div className="days-temp-history">
+                                                    <div className="days-temp-history-col3">
+                                                        <p>sunrise..........
+                                                            {day.astro.sunrise}
+                                                        </p>
+                                                        <p>sunset...........
+                                                            {day.astro.sunset}
+                                                        </p>
+                                                        <p>moonrise.....
+                                                            {day.astro.moonrise}
+                                                        </p>
+                                                        <p>moonset......
+                                                            {day.astro.moonset}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )) : ""
+                                    }
+                                </div>
+                            </div>
+
                         </div>
                     </div>
 

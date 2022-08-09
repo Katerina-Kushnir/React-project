@@ -57,7 +57,6 @@
 .css-azeo8y-MuiAvatar-root {
     margin-right: 20px;
 }
-
 .homePage {
     position: relative;
     z-index: 1;
@@ -80,7 +79,7 @@
 .waether-hourly {
     display: flex;
     width: 100%;
-    max-width: 860px;
+    max-width: 950px;
     overflow-x: scroll;
     border-radius: 8px;
     margin-right: 10px;
@@ -256,7 +255,6 @@
 }
 .weather-data-flex {
     display: flex;
-    justify-content: center;
 }
 .weather-data-temp {
     margin: 0;
@@ -275,8 +273,61 @@
 .weather-day {
     width: 100%;
     margin-right: 36px;
-    text-align: center;
+    text-align: left;
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: 10px;
+}
+.weather-day-left {
+    margin-right: 10px;
 }
 .home-content-favorite-city {
     display: flex;
+}
+.history-weather {
+    margin-top: 30px;
+}
+.history-weather-name {
+    margin-bottom: 10px;
+}
+.history-weather-date {
+    width: 360px;
+    display: flex;
+    align-items: center;
+}
+.history-weather-name {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 5px 0;
+}
+.history-weather-data {
+    font-size: 18px;
+    font-weight: 600;
+    margin-left: 4px;
+}
+.days-temp-history {
+    display: flex;
+    align-items: center;
+}
+.days-temp-history-col1 p{
+    margin: 0;
+    font-size: 40px;
+    font-weight: 700;
+}
+.days-temp-history-col2 {
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+    margin: 0;
+}
+.days-temp-history-col3 p, .days-temp-history-wind p {
+    margin: 0;
+    font-size: 18px;
+}
+.days-temp-history-col3 p {
+    margin-left: 20px;
+}
+.history-weather-flex {
+    display: flex;
+    align-items: flex-end;
 }
