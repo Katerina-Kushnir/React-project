@@ -1,8 +1,21 @@
 .css-5nwj3y {
     justify-content: space-between;
     padding: 6px 30px;
-    background: rgba(360, 360, 360, .7);
     margin-bottom: 30px;
+}
+#light .css-5nwj3y {
+    background: rgba(360, 360, 360, .7);
+}
+#dark .css-5nwj3y {
+    background: rgba(0, 0, 0, .7);
+}
+.css-julti5-MuiSwitch-root {
+    position: absolute !important;
+    top: 8px !important;
+    right: 90px !important;
+}
+#dark .css-1yjjitx-MuiSwitch-track {
+    background-color: #fff;
 }
 .css-s92b0l {
     padding: 6px 0;
@@ -29,6 +42,9 @@
     margin: 0 !important;
     line-height: 1 !important;
 }
+.days-temp-margin {
+    margin-bottom: 4px !important;
+}
 .days-temp {
     display: flex;
     justify-content: center
@@ -39,9 +55,15 @@
 .one-day {
     border-radius: 8px;
     margin-right: 10px;
+    cursor: pointer;
+}
+#light .one-day {
     background: rgba(360, 360, 360, .8);
     box-shadow: 0px 0px 6px 2px lavender;
-    cursor: pointer;
+}
+#dark .one-day {
+    background: rgba(0, 0, 0, .8);
+    box-shadow: 0px 0px 6px 2px rgb(40, 40, 40);
 }
 .css-1u3bzj6-MuiFormControl-root-MuiTextField-root {
     margin-top: 10px !important;
@@ -50,6 +72,27 @@
     align-items: flex-end !important;
     margin-right: 50px;
     color: #454545 !important;
+}
+#dark .css-1e6y48t-MuiButtonBase-root-MuiButton-root {
+    color: white !important;
+}
+#dark .css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root {
+    color: white !important;
+} 
+#dark .css-1pysi21-MuiFormLabel-root-MuiInputLabel-root {
+    color: white !important;
+}
+#dark .css-1d3z3hw-MuiOutlinedInput-notchedOutline {
+    border-color: white !important;
+}
+#dark .css-1sumxir-MuiFormLabel-root-MuiInputLabel-root,
+#dark .css-1yq5fb3-MuiButtonBase-root-MuiIconButton-root,
+#dark .css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root {
+    color: white !important;
+}
+#dark .css-1smlk3z-MuiPaper-root {
+    background-color: rgb(77, 77, 77) !important;
+    color: white !important;
 }
 .css-1lojo64-MuiTypography-root {
     text-align: center;
@@ -62,7 +105,6 @@
     z-index: 1;
 }
 .homePageBg {
-    background-image: url('../../images/sky.jpg');
     background-repeat: no-repeat;
     background-position: center top;
     background-size: cover;
@@ -70,7 +112,18 @@
     width: 100%;
     position: fixed;
     z-index: -1;
+}
+#light .homePageBg {
+    background-image: url('../../images/sky.jpg');
     opacity: .6;
+}
+#dark .homePageBg {
+    background-image: url('../../images/night.jpg');
+    opacity: .9;
+}
+#dark .css-118p9r0-MuiButtonBase-root-MuiBottomNavigationAction-root,
+#dark .css-78trlr-MuiButtonBase-root-MuiIconButton-root {
+    color: rgba(360, 360, 360) !important;
 }
 .css-1wnsr1i {
     border: none !important;
@@ -83,11 +136,17 @@
     overflow-x: scroll;
     border-radius: 8px;
     margin-right: 10px;
-    background: rgba(360, 360, 360, .8);
-    box-shadow: 0px 0px 6px 2px lavender;
     padding: 10px;
     box-sizing: border-box;
     margin-top: 10px;
+}
+#light .waether-hourly {
+    background: rgba(360, 360, 360, .8);
+    box-shadow: 0px 0px 6px 2px lavender;
+}
+#dark .waether-hourly {
+    background: rgba(0, 0, 0, .8);
+    box-shadow: 0px 0px 6px 2px rgb(40, 40, 40);
 }
 .waether-hourly::-webkit-scrollbar {
     height: 5px; 
@@ -118,8 +177,11 @@
 .css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root {
     height: 40px !important;
 }
-.css-1smlk3z-MuiPaper-root {
+#light .css-1smlk3z-MuiPaper-root {
     background-color: rgba(360, 360, 360, .8) !important;
+}
+#dark .css-1smlk3z-MuiPaper-root {
+    background-color: rgba(0, 0, 0, .8) !important;
 }
 .homeTop {
     display: flex;
@@ -134,10 +196,15 @@
     grid-template-rows: 50px 1fr;
 }
 .auto-city {
-    background: rgba(360, 360, 360, .8);
     padding-left: 16px;
     border-radius: 4px;
     z-index: 1;
+}
+#light .auto-city {
+    background: rgba(360, 360, 360, .8);
+}
+#dark .auto-city {
+    background: rgba(0, 0, 0, .8);
 }
 .calendar {
     
@@ -190,11 +257,17 @@
     overflow-y: scroll;
     overflow-x: hidden;
     border-radius: 8px;
-    background: rgba(360, 360, 360, .8);
-    box-shadow: 0px 0px 6px 2px lavender;
     padding: 20px;
     box-sizing: border-box;
     margin-top: 10px;
+}
+#light .tournament-block {
+    background: rgba(360, 360, 360, .8);
+    box-shadow: 0px 0px 6px 2px lavender;
+}
+#dark .tournament-block {
+    background: rgba(0, 0, 0, .8);
+    box-shadow: 0px 0px 6px 2px rgb(40, 40, 40);
 }
 .tournament-block::-webkit-scrollbar,
 .favorite-sport::-webkit-scrollbar {
@@ -225,10 +298,16 @@
     overflow-y: scroll;
     overflow-x: hidden;
     border-radius: 0 0 8px8px;
-    background: rgba(360, 360, 360, .8);
-    box-shadow: 0px 0px 6px 2px lavender;
     padding: 10px;
     box-sizing: border-box;
+}
+#light .favorite-sport {
+    background: rgba(360, 360, 360, .8);
+    box-shadow: 0px 0px 6px 2px lavender;
+}
+#dark .favorite-sport {
+    background: rgba(0, 0, 0, .8);
+    box-shadow: 0px 0px 6px 2px rgb(40, 40, 40);
 }
 .favorite-sport-delete {
     display: flex;
@@ -240,9 +319,15 @@
 .favorite-sport-header {
     margin-top: 30px;
     border-radius: 8px 8px 0 0;
+    padding: 10px;
+}
+#light .favorite-sport-header {
     background: rgba(360, 360, 360, .8);
     box-shadow: 0px 0px 6px 2px lavender;
-    padding: 10px;
+}
+#dark .favorite-sport-header {
+    background: rgba(0, 0, 0, .8);
+    box-shadow: 0px 0px 6px 2px rgb(40, 40, 40);
 }
 .weather-data-city {
     font-size: 56px;
@@ -265,14 +350,15 @@
     margin: 0;
     display: flex;
     align-items: center;
-    font-size: 20px;
+    font-size: 18px;
 }
 .home-content-left-top {
     display: flex;
 }
 .weather-day {
     width: 100%;
-    margin-right: 36px;
+    max-width: 424px;
+    margin-right: 26px;
     text-align: left;
     display: flex;
     align-items: flex-end;
@@ -317,7 +403,7 @@
 .days-temp-history-col2 {
     display: flex;
     align-items: center;
-    font-size: 20px;
+    font-size: 16px;
     margin: 0;
 }
 .days-temp-history-col3 p, .days-temp-history-wind p {

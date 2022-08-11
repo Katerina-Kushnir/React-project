@@ -68,10 +68,10 @@ export const fetchAutocomplete = createAsyncThunk(
 
 export const fetchHistoryWeather = createAsyncThunk(
     'https://weatherapi-com.p.rapidapi.com/history.json',
-    async function (date) {
+    async function (dataSmth) {
         try {
-
-            const response = await fetch(`https://weatherapi-com.p.rapidapi.com/history.json?q=London&dt=${date}&lang=en`, {
+            console.log("Lviv", dataSmth);
+            const response = await fetch(`https://weatherapi-com.p.rapidapi.com/history.json?q=${dataSmth.cityForCalendar}&dt=${dataSmth.rightFormatDate}&lang=en`, {
                 method: 'GET',
                 headers: {
                     'X-RapidAPI-Key': 'cdaa531bf2msh3a74fc950af8a77p1387b9jsn048eff83de29',
