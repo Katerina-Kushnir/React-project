@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useCallback } from 'react';
 import { useState } from 'react';
 import './App.css';
@@ -18,16 +18,18 @@ export const App = () => {
   const [currentTheme, setCurrentTheme] = useState("light");
 
   return (
-    <ThemeContext.Provider value={currentTheme}>
-      <div id={currentTheme} >
-        <nav>
-          <Switch defaultChecked onChange={themeModeHasChanged} />
-        </nav>
-        <Routes>
-          <Route path="/" element={<Register />} />
-          <Route path="/home" element={<Home />} />
-        </Routes>
-      </div>
-    </ThemeContext.Provider>
+    <Suspense fallback="...Loading">
+      <ThemeContext.Provider value={currentTheme}>
+        <div id={currentTheme} >
+          <nav>
+            <Switch defaultChecked onChange={themeModeHasChanged} />
+          </nav>
+          <Routes>
+            <Route path="/" element={<Register />} />
+            <Route path="/home" element={<Home />} />
+          </Routes>
+        </div>
+      </ThemeContext.Provider>
+    </Suspense>
   );
 }

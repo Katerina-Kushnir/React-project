@@ -96,6 +96,7 @@ const weatherApi = createSlice({
         autocompleteCity: [],
         getHistoryWeather: [],
         status: null,
+        favoriteCity: []
     },
     reducers: {},
     extraReducers: {
@@ -114,7 +115,7 @@ const weatherApi = createSlice({
         [fetchHistoryWeather.fulfilled]: (state, action) => {
             console.log("History weather payload", action.payload);
             state.getHistoryWeather = action.payload;
-        }
+        },
     },
 })
 

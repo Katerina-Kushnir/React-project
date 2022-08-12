@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import './Home.css';
@@ -6,6 +6,8 @@ import { weatherSelector } from "../../Store/App/selector";
 import { fetchSport, fetchWeatherByName, fetchAutocomplete, fetchHistoryWeather } from "../../Store/App/reduser";
 import { ThemeContext } from '../../App'
 import moment from "moment";
+import { useTranslation } from "react-i18next";
+import '../../utils/i18nex';
 
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
@@ -33,6 +35,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import DeleteIcon from '@mui/icons-material/Delete';
+import ButtonGroup from '@mui/material/ButtonGroup';
 
 const style = {
     position: 'absolute',
@@ -63,6 +66,11 @@ function Home() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    const { t, i18n } = useTranslation();
+    const changeLanguage = useCallback((lang) => {
+        i18n.changeLanguage(lang);
+    }, []);
+
     const getWeather = useSelector(weatherSelector);
     // const [city, setCity] = useState("");
     const [degree, setDegree] = useState(null);
@@ -74,6 +82,7 @@ function Home() {
     const [weatherHourly, setWeatherHourly] = useState("");
     // const [historyDate, setHistoryDate] = useState("");
     const [cityForCalendar, setCityForCalendar] = useState();
+    const [listOfFavoriteCity, setListOfFavoriteCity] = useState([]);
 
     const logoutBtn = () => {
         localStorage.clear();
@@ -89,13 +98,22 @@ function Home() {
     //     dispatch(fetchSport(city));
     // }
     const degrees = (event) => {
-        setDegree(event.target.value);
+        // setDegree(event.target.value)
+        localStorage.setItem("temperature", event.target.value);
+        const temp = localStorage.getItem("temperature");
+        setDegree(temp);
     }
     const windSpeedy = (event) => {
-        setWindSpeed(event.target.value);
+        // setWindSpeed(event.target.value)
+        localStorage.setItem("wind speed", event.target.value);
+        const wind = localStorage.getItem("wind speed",);
+        setWindSpeed(wind);
     }
     const pressures = (event) => {
-        setPressure(event.target.value);
+        // setPressure(event.target.value)
+        localStorage.setItem("pressure", event.target.value);
+        const pressure = localStorage.getItem("pressure");
+        setPressure(pressure);
     }
     const stop = (event) => {
         event.stopPropagation();
@@ -112,17 +130,28 @@ function Home() {
         setFavoriteCity("");
         console.log("Status", getWeather.status);
     }
+    const selectFromListFavoriteCities = (e) => {
+        console.log("Favorite cities", e.target.textContent);
+        dispatch(fetchWeatherByName(e.target.textContent))
+    }
+    const addFavoriteCity = (favoriteCity) => {
+        localStorage.setItem("favoriteCities",  JSON.stringify([...listOfFavoriteCity, favoriteCity]));
+        setListOfFavoriteCity([...listOfFavoriteCity, favoriteCity]);
+    }
+    const deleteFromListFavoriteCities = (cityName) => {
+        setListOfFavoriteCity(listOfFavoriteCity.filter(city => city.name !== cityName));
+        localStorage.removeItem("favoriteCities");
+    }
+    
     const addFavoriteSport = (tournament) => {
-        console.log("Sport favorite", tournament);
-        setFavoriteSport([...favoriteSport, tournament]);
-        console.log("Favorite:", favoriteSport);
         localStorage.setItem("favoriteSport", JSON.stringify([...favoriteSport, tournament]));
+        setFavoriteSport([...favoriteSport, tournament]);
     }
     const deleteFavoriteSport = (tournament) => {
         setFavoriteSport(favoriteSport.filter(sport => sport !== tournament));
-        localStorage.removeItem(tournament);
-
+        localStorage.removeItem("favoriteSport");
     }
+    
     const getCityAutocomplete = (event) => {
         dispatch(fetchWeatherByName(event.target.textContent));
         dispatch(fetchSport(event.target.textContent));
@@ -153,15 +182,51 @@ function Home() {
     };     //MUI
 
     useEffect(() => {
-        setDegree("C");
+        const temp = localStorage.getItem("temperature");
+        if(temp) {
+            setDegree(temp);
+        } else {
+            setDegree("C");
+        }
+        
     }, [])
 
     useEffect(() => {
-        setWindSpeed("mph");
+        const wind = localStorage.getItem("wind speed");
+        if(wind) {
+            setWindSpeed(wind);
+        } else {
+            setWindSpeed("kph");
+        }
     }, [])
 
     useEffect(() => {
-        setPressure("mb");
+        const press = localStorage.getItem("pressure");
+        if(press) {
+            setPressure(press);
+        } else {
+            setPressure("mb");
+        }
+    }, [])
+
+    const favor = localStorage.getItem("favoriteCities");
+    const favCity = JSON.parse(favor)
+    useEffect(() => {
+        
+        console.log("favor", favor)
+        if(favor) {
+            setListOfFavoriteCity(favCity);
+        } 
+    }, [])
+
+    const favorSport = localStorage.getItem("favoriteSport");
+    const myfavorSport = JSON.parse(favorSport)
+    useEffect(() => {
+        
+        console.log("favorSport", favorSport)
+        if(favorSport) {
+            setFavoriteSport(myfavorSport);
+        } 
     }, [])
 
     useEffect(() => {
@@ -193,7 +258,7 @@ function Home() {
     useEffect(() => {
         dispatch(fetchAutocomplete(favoriteCity));
         console.log("Effect city autocomplete", getWeather.autocompleteCity);
-    }, [favoriteCity])
+    }, [favoriteCity, dispatch])
 
     useEffect(() => {
         dispatch(fetchHistoryWeather("2022-08-09"));
@@ -205,12 +270,23 @@ function Home() {
     console.log("theme:", theme)
 
 
+    const getStorageFirstname = localStorage.getItem('firstname');
+    const [storageFirstname, setStorageFirstname] = useState(JSON.parse(getStorageFirstname));
+    const getStorageSurname = localStorage.getItem('surname');
+    const [storageSurname, setStorageSurname] = useState(JSON.parse(getStorageSurname));
+    const getStoragePhone = localStorage.getItem('phone')
+    const [storagePhone, setStoragePhone] = useState(JSON.parse(getStoragePhone));
 
+    const updateData = () => {
+        localStorage.setItem("firstname", JSON.stringify(storageFirstname));
+        localStorage.setItem("surname", JSON.stringify(storageSurname));
+        localStorage.setItem("phone", JSON.stringify(storagePhone));
+    }
 
 
     const [openModal2, setOpenModal2] = React.useState(false);
     const handleOpenModal2 = (event) => { event.stopPropagation(); setOpenModal2(true) };
-    const handleCloseModal2 = (event) => { event.stopPropagation(); setOpenModal2(false) }; 
+    const handleCloseModal2 = (event) => { event.stopPropagation(); setOpenModal2(false) };
 
     return (
         <div>
@@ -218,8 +294,12 @@ function Home() {
                 <div className="homePageBg"></div>
                 <React.Fragment>
                     <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
-                        <Typography sx={{ minWidth: 100 }}>WeatherAPI</Typography>
-                        <Typography sx={{ minWidth: 100 }}>Katerina Kushnir</Typography>
+                        <Typography sx={{ minWidth: 100 }}>{t("header.api")}</Typography>
+                        <Typography sx={{ minWidth: 100 }}>{t("header.name")}</Typography>
+                        <ButtonGroup variant="contained" aria-label="outlined primary button group">
+                            <Button onClick={() => changeLanguage("eng")}>{t("lang.eng")}</Button>
+                            <Button onClick={() => changeLanguage("ua")}>{t("lang.ua")}</Button>
+                        </ButtonGroup>
                         <Tooltip title="Account settings">
                             <IconButton
                                 onClick={handleClick}
@@ -269,7 +349,7 @@ function Home() {
                         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                     >
                         <MenuItem onClick={handleOpenModal2}>
-                            <Avatar /> My account
+                            <Avatar /> {t("header.account")}
                             <Modal
                                 open={openModal2}
                                 onClose={handleCloseModal2}
@@ -277,17 +357,24 @@ function Home() {
                                 aria-describedby="modal-modal-description"
                             >
                                 <Box sx={style}>
+
                                     <Typography id="modal-modal-title" variant="h6" component="h2">
-                                        My data
+                                        {t("header.data")}
                                     </Typography>
                                     <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                        Firstname: {}                                       
+                                        {t("header.firstname")}:
+                                        <input value={storageFirstname} onChange={(e) => setStorageFirstname(e.target.value)} />
+                                        <button className="button-save" onClick={() => updateData()} >{t("header.save")}</button>
                                     </Typography>
                                     <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                        Surname: {}
+                                        {t("header.surname")}:
+                                        <input value={storageSurname} onChange={(e) => setStorageSurname(e.target.value)} />
+                                        <button className="button-save" onClick={() => updateData()} >{t("header.save")}</button>
                                     </Typography>
                                     <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                        Phone: {}
+                                        {t("header.phone")}:
+                                        <input value={storagePhone} onChange={(e) => setStoragePhone(e.target.value)} />
+                                        <button className="button-save" onClick={() => updateData()} >{t("header.save")}</button>
                                     </Typography>
                                 </Box>
                             </Modal>
@@ -298,7 +385,7 @@ function Home() {
                             <ListItemIcon>
                                 <Settings fontSize="small" />
                             </ListItemIcon>
-                            Settings
+                            {t("header.settings")}
                             <Modal
                                 open={openModal}
                                 onClose={handleCloseModal}
@@ -307,7 +394,7 @@ function Home() {
                             >
                                 <Box sx={style}>
                                     <FormControl>
-                                        <FormLabel id="demo-radio-buttons-group-label">Temperature</FormLabel>
+                                        <FormLabel id="demo-radio-buttons-group-label">{t("header.temp")}</FormLabel>
                                         <RadioGroup
                                             aria-labelledby="demo-radio-buttons-group-label"
                                             defaultValue="female"
@@ -315,11 +402,11 @@ function Home() {
                                             onClick={(e) => stop(e)}
                                             onChange={(e) => degrees(e)}
                                         >
-                                            <FormControlLabel value="F" control={<Radio />} label="degree Fahrenheit" />
-                                            <FormControlLabel value="C" control={<Radio />} label="degree Celsius" />
+                                            <FormControlLabel value="F" control={<Radio />} label={t("header.tempF")} />
+                                            <FormControlLabel value="C" control={<Radio />} label={t("header.tempC")} />
                                         </RadioGroup>
 
-                                        <FormLabel id="demo-radio-buttons-group-label2">Wind speed</FormLabel>
+                                        <FormLabel id="demo-radio-buttons-group-label2">{t("header.wind")}</FormLabel>
                                         <RadioGroup
                                             aria-labelledby="demo-radio-buttons-group-label2"
                                             defaultValue="female"
@@ -327,8 +414,8 @@ function Home() {
                                             onClick={(e) => stop(e)}
                                             onChange={(e) => windSpeedy(e)}
                                         >
-                                            <FormControlLabel value="kph" control={<Radio />} label="wind speed in kmh" />
-                                            <FormControlLabel value="mph" control={<Radio />} label="wind speed in mph" />
+                                            <FormControlLabel value="kph" control={<Radio />} label={t("header.windK")} />
+                                            <FormControlLabel value="mph" control={<Radio />} label={t("header.windM")} />
                                         </RadioGroup>
 
                                         <FormLabel id="demo-radio-buttons-group-label3">Atmospheric pressure</FormLabel>
@@ -351,14 +438,14 @@ function Home() {
                             <ListItemIcon>
                                 <Logout fontSize="small" />
                             </ListItemIcon>
-                            Logout
+                            {t("header.logout")}
                         </MenuItem>
                     </Menu>
 
                     <div className="homeTop">
                         <div className="search-city">
-                            <TextField id="outlined-basic" value={favoriteCity} onChange={(e) => getFavoriteCity(e)} label="Search city" variant="outlined" size="small" />
-                            <Button variant="text" onClick={() => addCity()}>Search city</Button>
+                            <TextField id="outlined-basic" value={favoriteCity} onChange={(e) => getFavoriteCity(e)} label={t("city.searchCity")} variant="outlined" size="small" />
+                            <Button variant="text" onClick={() => addCity()}>{t("city.search")}</Button>
                             {
                                 selectedCity ? <div className="auto-city">
                                     {
@@ -374,7 +461,7 @@ function Home() {
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <Stack spacing={3}>
                                     <DesktopDatePicker
-                                        label="Date desktop"
+                                        label={t("calendar.dateDesk")}
                                         inputFormat="yyyy-MM-dd"
                                         value={value}
                                         onChange={handleChangeCalendar}
@@ -390,12 +477,24 @@ function Home() {
                     <div className="home-content">
                         <div className="home-content-left">
                             <div className="home-content-favorite-city">
-                                <p className="variant-city">Selected city: {getWeather.cityWeather.error ? "City not found" : getWeather.cityWeather ? getWeather.cityWeather.location?.name : ""}, {getWeather.cityWeather.error ? "Country not found" : getWeather.cityWeather ? getWeather.cityWeather.location?.country : ""}</p>
-                                <BottomNavigationAction label="Favorites" icon={<FavoriteIcon />} onClick={() => addCity(getWeather.cityWeather)} />
+                                <p className="variant-city">{t("city.select")}: {getWeather.cityWeather.error ? "City not found" : getWeather.cityWeather ? getWeather.cityWeather.location?.name : ""}, {getWeather.cityWeather.error ? "Country not found" : getWeather.cityWeather ? getWeather.cityWeather.location?.country : ""}</p>
+                                <BottomNavigationAction label="Favorites" icon={<FavoriteIcon />} onClick={() => addFavoriteCity(getWeather.cityWeather.location)} />
                             </div>
 
                             <div className="myFavoriteCity">
-                                <p>My favorite city:</p>
+                                <div>{t("city.favorite")}:
+                                    {
+                                        listOfFavoriteCity.map((favoriteCity, index) => (
+                                            <div  key={(favoriteCity + index)} >
+                                                <span onClick={(e) => selectFromListFavoriteCities(e)}>{" " + favoriteCity.name}</span>
+                                                <IconButton aria-label="delete" onClick={() => deleteFromListFavoriteCities(favoriteCity.name)} >
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+
                             </div>
                             <div className="home-content-left-top">
 
@@ -420,17 +519,17 @@ function Home() {
                                         </div>
                                     </div>
                                     <div className="weather-day-right">
-                                        <p className="weather-day-right-data">feelslike............
+                                        <p className="weather-day-right-data">{t("weather.feelslike")}............
                                             {(degree === "F") ? getWeather.cityWeather.current?.feelslike_f : ""}
                                             {(degree === "C") ? getWeather.cityWeather.current?.feelslike_c : ""}
                                             <span>&deg;</span>
                                         </p>
-                                        <p className="weather-day-right-data">wind speed.....
+                                        <p className="weather-day-right-data">{t("weather.wind")}.....
                                             {(windSpeed === "kph") ? getWeather.cityWeather.current?.wind_kph + " kph" : ""}
                                             {(windSpeed === "mph") ? getWeather.cityWeather.current?.wind_mph + " mph" : ""}
 
                                         </p>
-                                        <p className="weather-day-right-data">pressure...........
+                                        <p className="weather-day-right-data">{t("weather.press")}...........
                                             {(pressure === "mb") ? getWeather.cityWeather.current?.pressure_mb + " mb" : ""}
                                             {(pressure === "in") ? getWeather.cityWeather.current?.pressure_in + " in" : ""}
                                         </p>
@@ -446,7 +545,7 @@ function Home() {
                                                 <div>{day.day.condition.text}</div>
                                                 <div className="days-temp">
                                                     <div>
-                                                        <p className="days-temp-margin">min</p>
+                                                        <p className="days-temp-margin">{t("weather.min")}</p>
                                                         <p className="days-temp-margin">
                                                             {(degree === "F") ? day.day.mintemp_f : ""}
                                                             {(degree === "C") ? day.day.mintemp_c : ""}
@@ -454,7 +553,7 @@ function Home() {
                                                         </p>
                                                     </div>
                                                     <div>
-                                                        <p className="days-temp-margin">max</p>
+                                                        <p className="days-temp-margin">{t("weather.max")}</p>
                                                         <p className="days-temp-margin">
                                                             {(degree === "F") ? day.day.maxtemp_f : ""}
                                                             {(degree === "C") ? day.day.maxtemp_c : ""}
@@ -496,7 +595,7 @@ function Home() {
                             </div>
 
                             <div className="history-weather">
-                                <div className="history-weather-date">History weather:
+                                <div className="history-weather-date">{t("weather.history")}:
                                     {
                                         getWeather ? getWeather.getHistoryWeather.forecast?.forecastday.map((day, index) => (
                                             <div key={day.date + index}>
@@ -525,7 +624,7 @@ function Home() {
                                                         </div>
                                                     </div>
                                                     <div className="days-temp-history-wind">
-                                                        <p>wind speed..........
+                                                        <p>{t("weather.wind")}..........
                                                             {(windSpeed === "kph") ? day.day.maxwind_kph + "kph" : ""}
                                                             {(windSpeed === "mph") ? day.day.maxwind_mph + "mph" : ""}
                                                         </p>
@@ -540,16 +639,16 @@ function Home() {
                                                 <div key={day.date + index}>
                                                     <div className="days-temp-history">
                                                         <div className="days-temp-history-col3">
-                                                            <p>sunrise..........
+                                                            <p>{t("weather.sunrise")}..........
                                                                 {day.astro.sunrise}
                                                             </p>
-                                                            <p>sunset...........
+                                                            <p>{t("weather.sunset")}...........
                                                                 {day.astro.sunset}
                                                             </p>
-                                                            <p>moonrise.....
+                                                            <p>{t("weather.moonrise")}.....
                                                                 {day.astro.moonrise}
                                                             </p>
-                                                            <p>moonset......
+                                                            <p>{t("weather.moonset")}......
                                                                 {day.astro.moonset}
                                                             </p>
                                                         </div>
@@ -565,7 +664,7 @@ function Home() {
 
                         <div className="home-content-right">
                             <div className="tournament">
-                                <p className="tournament-p">All sports events in: {getWeather.cityWeather.error ? "City not found" : getWeather.cityWeather ? getWeather.cityWeather.location?.name : ""}, {getWeather.cityWeather.error ? "Country not found" : getWeather.cityWeather ? getWeather.cityWeather.location?.country : ""}</p>
+                                <p className="tournament-p">{t("sport.allSport")}: {getWeather.cityWeather.error ? "City not found" : getWeather.cityWeather ? getWeather.cityWeather.location?.name : ""}, {getWeather.cityWeather.error ? "Country not found" : getWeather.cityWeather ? getWeather.cityWeather.location?.country : ""}</p>
                                 <div className="tournament-block">
                                     <b>Football</b> {getWeather.sports ? getWeather.sports.football?.map((tournament, index) => (
                                         <div key={tournament + index} className="home-content-right-tournament">
@@ -597,7 +696,7 @@ function Home() {
                             </div>
 
                             <div className="favorite-sport-header">
-                                <b>My favorite sports:</b>
+                                <b>{t("sport.favorite")}:</b>
                             </div>
                             <div className="favorite-sport">
                                 {favoriteSport.map((tournament, index) => (

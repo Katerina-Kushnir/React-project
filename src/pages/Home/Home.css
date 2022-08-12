@@ -12,7 +12,21 @@
 .css-julti5-MuiSwitch-root {
     position: absolute !important;
     top: 8px !important;
-    right: 90px !important;
+    right: 180px !important;
+}
+.css-zqcytf-MuiButtonGroup-root {
+    position: absolute;
+    right: 100px !important;
+}
+.css-zqcytf-MuiButtonGroup-root .MuiButtonGroup-grouped:not(:last-of-type),
+.css-zqcytf-MuiButtonGroup-root .MuiButtonGroup-grouped:not(:first-of-type) {
+    width: 34px !important;
+    height: 25px !important;
+    font-size: 12px !important;
+    padding: 0;
+}
+#dark .css-sghohy-MuiButtonBase-root-MuiButton-root {
+    background-color: #bdbdbd !important;
 }
 #dark .css-1yjjitx-MuiSwitch-track {
     background-color: #fff;
@@ -206,9 +220,6 @@
 #dark .auto-city {
     background: rgba(0, 0, 0, .8);
 }
-.calendar {
-    
-}
 .home-content-right {
     width: 100%;
     max-width: 400px;
@@ -219,12 +230,12 @@
 }
 .css-118p9r0-MuiButtonBase-root-MuiBottomNavigationAction-root {
     align-items: flex-end !important;
-}
-.css-118p9r0-MuiButtonBase-root-MuiBottomNavigationAction-root {
     grid-column: 2/3;
     grid-row: 1/2;
     padding-right: 50px !important;
     padding-top: 5px !important;
+    min-width: 60px !important;
+    max-width: 90px !important;
 }
 .home-content-right-tournament p:first-child {
     grid-column: 1/2;
@@ -416,4 +427,20 @@
 .history-weather-flex {
     display: flex;
     align-items: flex-end;
+}
+.button-save {
+    width: 70px;
+    background-color: #9c9c9c;
+    height: 26px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #fff;
+}
+.button-save:hover {
+    background-color: #535353;
+    cursor: pointer;
+}
+.button-save:active {
+    background-color: #75995d;
 }
