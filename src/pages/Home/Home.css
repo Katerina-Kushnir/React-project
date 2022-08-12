@@ -444,3 +444,6 @@
 .button-save:active {
     background-color: #75995d;
 }
+.favoriteCity-row {
+    display: inline;
+}

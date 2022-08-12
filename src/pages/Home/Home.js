@@ -151,7 +151,7 @@ function Home() {
         setFavoriteSport(favoriteSport.filter(sport => sport !== tournament));
         localStorage.removeItem("favoriteSport");
     }
-    
+
     const getCityAutocomplete = (event) => {
         dispatch(fetchWeatherByName(event.target.textContent));
         dispatch(fetchSport(event.target.textContent));
@@ -485,12 +485,12 @@ function Home() {
                                 <div>{t("city.favorite")}:
                                     {
                                         listOfFavoriteCity.map((favoriteCity, index) => (
-                                            <div  key={(favoriteCity + index)} >
+                                            <p  key={(favoriteCity + index)} className="favoriteCity-row">
                                                 <span onClick={(e) => selectFromListFavoriteCities(e)}>{" " + favoriteCity.name}</span>
                                                 <IconButton aria-label="delete" onClick={() => deleteFromListFavoriteCities(favoriteCity.name)} >
                                                     <DeleteIcon />
                                                 </IconButton>
-                                            </div>
+                                            </p>
                                         ))
                                     }
                                 </div>
