@@ -135,22 +135,33 @@ function Home() {
         dispatch(fetchWeatherByName(e.target.textContent))
     }
     const addFavoriteCity = (favoriteCity) => {
-        localStorage.setItem("favoriteCities",  JSON.stringify([...listOfFavoriteCity, favoriteCity]));
+        localStorage.setItem("favoriteCities", JSON.stringify([...listOfFavoriteCity, favoriteCity]));
         setListOfFavoriteCity([...listOfFavoriteCity, favoriteCity]);
     }
     const deleteFromListFavoriteCities = (cityName) => {
-        setListOfFavoriteCity(listOfFavoriteCity.filter(city => city.name !== cityName));
-        localStorage.removeItem("favoriteCities");
+        const newListOfFavoriteCity = listOfFavoriteCity.filter(city => city.name !== cityName)
+        setListOfFavoriteCity(newListOfFavoriteCity);
+        localStorage.setItem("favoriteCities", JSON.stringify(newListOfFavoriteCity));
     }
-    
+
     const addFavoriteSport = (tournament) => {
         localStorage.setItem("favoriteSport", JSON.stringify([...favoriteSport, tournament]));
         setFavoriteSport([...favoriteSport, tournament]);
     }
     const deleteFavoriteSport = (tournament) => {
-        setFavoriteSport(favoriteSport.filter(sport => sport !== tournament));
-        localStorage.removeItem("favoriteSport");
+        const newFavoriteSport = favoriteSport?.filter(sport => sport !== tournament)
+        setFavoriteSport(newFavoriteSport);
+        localStorage.setItem('favoriteSport', JSON.stringify(newFavoriteSport));
     }
+    const favorSport = localStorage.getItem("favoriteSport");
+    const myfavorSport = JSON.parse(favorSport)
+    useEffect(() => {
+
+        console.log("favorSport", favorSport)
+        if (favorSport) {
+            setFavoriteSport(myfavorSport);
+        }
+    }, [])
 
     const getCityAutocomplete = (event) => {
         dispatch(fetchWeatherByName(event.target.textContent));
@@ -183,17 +194,17 @@ function Home() {
 
     useEffect(() => {
         const temp = localStorage.getItem("temperature");
-        if(temp) {
+        if (temp) {
             setDegree(temp);
         } else {
             setDegree("C");
         }
-        
+
     }, [])
 
     useEffect(() => {
         const wind = localStorage.getItem("wind speed");
-        if(wind) {
+        if (wind) {
             setWindSpeed(wind);
         } else {
             setWindSpeed("kph");
@@ -202,7 +213,7 @@ function Home() {
 
     useEffect(() => {
         const press = localStorage.getItem("pressure");
-        if(press) {
+        if (press) {
             setPressure(press);
         } else {
             setPressure("mb");
@@ -212,21 +223,11 @@ function Home() {
     const favor = localStorage.getItem("favoriteCities");
     const favCity = JSON.parse(favor)
     useEffect(() => {
-        
-        console.log("favor", favor)
-        if(favor) {
-            setListOfFavoriteCity(favCity);
-        } 
-    }, [])
 
-    const favorSport = localStorage.getItem("favoriteSport");
-    const myfavorSport = JSON.parse(favorSport)
-    useEffect(() => {
-        
-        console.log("favorSport", favorSport)
-        if(favorSport) {
-            setFavoriteSport(myfavorSport);
-        } 
+        console.log("favor", favor)
+        if (favor) {
+            setListOfFavoriteCity(favCity);
+        }
     }, [])
 
     useEffect(() => {
@@ -485,7 +486,7 @@ function Home() {
                                 <div>{t("city.favorite")}:
                                     {
                                         listOfFavoriteCity.map((favoriteCity, index) => (
-                                            <p  key={(favoriteCity + index)} className="favoriteCity-row">
+                                            <p key={(favoriteCity + index)} className="favoriteCity-row">
                                                 <span onClick={(e) => selectFromListFavoriteCities(e)}>{" " + favoriteCity.name}</span>
                                                 <IconButton aria-label="delete" onClick={() => deleteFromListFavoriteCities(favoriteCity.name)} >
                                                     <DeleteIcon />
@@ -508,9 +509,9 @@ function Home() {
                                         </div>
                                         <div className="weather-data-flex">
                                             <p className="weather-data-temp">
-                                                {(degree === "F") ? getWeather.cityWeather.current?.temp_f : ""}
-                                                {(degree === "C") ? getWeather.cityWeather.current?.temp_c : ""}
-                                                <span>&deg;</span>
+                                                {(degree === "F") ? getWeather.cityWeather.current?.temp_f + " °F" : ""}
+                                                {(degree === "C") ? getWeather.cityWeather.current?.temp_c + " °C" : ""}
+                                                {/* <span>&deg;</span> */}
                                             </p>
                                             <p className="weather-data-icon">
                                                 <img src={getWeather.cityWeather.current?.condition.icon} />
@@ -520,9 +521,9 @@ function Home() {
                                     </div>
                                     <div className="weather-day-right">
                                         <p className="weather-day-right-data">{t("weather.feelslike")}............
-                                            {(degree === "F") ? getWeather.cityWeather.current?.feelslike_f : ""}
-                                            {(degree === "C") ? getWeather.cityWeather.current?.feelslike_c : ""}
-                                            <span>&deg;</span>
+                                            {(degree === "F") ? getWeather.cityWeather.current?.feelslike_f + " °F" : ""}
+                                            {(degree === "C") ? getWeather.cityWeather.current?.feelslike_c + " °C" : ""}
+                                            {/* <span>&deg;</span> */}
                                         </p>
                                         <p className="weather-day-right-data">{t("weather.wind")}.....
                                             {(windSpeed === "kph") ? getWeather.cityWeather.current?.wind_kph + " kph" : ""}
@@ -547,17 +548,17 @@ function Home() {
                                                     <div>
                                                         <p className="days-temp-margin">{t("weather.min")}</p>
                                                         <p className="days-temp-margin">
-                                                            {(degree === "F") ? day.day.mintemp_f : ""}
-                                                            {(degree === "C") ? day.day.mintemp_c : ""}
-                                                            <span>&deg;</span>
+                                                            {(degree === "F") ? day.day.mintemp_f + " °F" : ""}
+                                                            {(degree === "C") ? day.day.mintemp_c + " °C" : ""}
+                                                            {/* <span>&deg;</span> */}
                                                         </p>
                                                     </div>
                                                     <div>
                                                         <p className="days-temp-margin">{t("weather.max")}</p>
                                                         <p className="days-temp-margin">
-                                                            {(degree === "F") ? day.day.maxtemp_f : ""}
-                                                            {(degree === "C") ? day.day.maxtemp_c : ""}
-                                                            <span>&deg;</span>
+                                                            {(degree === "F") ? day.day.maxtemp_f + " °F" : ""}
+                                                            {(degree === "C") ? day.day.maxtemp_c + " °C" : ""}
+                                                            {/* <span>&deg;</span> */}
                                                         </p>
                                                     </div>
                                                 </div>
@@ -576,9 +577,9 @@ function Home() {
                                             <div className="hour-content"><img src={cityTime.condition.icon} /><p>{cityTime.condition.text}</p></div>
 
                                             <div className="hour-content">
-                                                {(degree === "F") ? cityTime.temp_f : ""}
-                                                {(degree === "C") ? cityTime.temp_c : ""}
-                                                <span>&deg;</span>
+                                                {(degree === "F") ? cityTime.temp_f + " °F" : ""}
+                                                {(degree === "C") ? cityTime.temp_c + " °C" : ""}
+                                                {/* <span>&deg;</span> */}
                                             </div>
                                             <div className="hour-content">
                                                 {(windSpeed === "kph") ? cityTime.wind_kph + " kph" : ""}
@@ -613,9 +614,9 @@ function Home() {
                                                     <div className="days-temp-history">
                                                         <div className="days-temp-history-col1">
                                                             <p>
-                                                                {(degree === "F") ? day.day.avgtemp_f : ""}
-                                                                {(degree === "C") ? day.day.avgtemp_c : ""}
-                                                                <span>&deg;</span>
+                                                                {(degree === "F") ? day.day.avgtemp_f + " °F" : ""}
+                                                                {(degree === "C") ? day.day.avgtemp_c + " °F" : ""}
+                                                                {/* <span>&deg;</span> */}
                                                             </p>
                                                         </div>
                                                         <div className="days-temp-history-col2">

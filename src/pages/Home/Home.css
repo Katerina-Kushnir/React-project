@@ -351,10 +351,11 @@
 }
 .weather-data-flex {
     display: flex;
+    align-items: center;
 }
 .weather-data-temp {
     margin: 0;
-    font-size: 50px;
+    font-size: 34px;
     font-weight: 700;
 }
 .weather-data-icon {
