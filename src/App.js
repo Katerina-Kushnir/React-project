@@ -1,35 +1,11 @@
-import React, { Suspense } from 'react';
-import { useCallback } from 'react';
-import { useState } from 'react';
-import './App.css';
-import { Routes, Route } from "react-router-dom";
-import Home from './pages/Home/Home';
-import Register from './pages/Register/Register';
-import Switch from '@mui/material/Switch';
-
-export const ThemeContext = React.createContext('light');
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { isRegistered } from './Store/Register/selector';
+import { AppRouter } from './pages/AppRouter';
+import { RegisterRouter } from './pages/Register/RegisterRouter';
+import './App.css'
 
 export const App = () => {
-
-  const themeModeHasChanged = useCallback((event) => {
-    console.log('event:', event.target.checked)
-    setCurrentTheme(event.target.checked ? 'light' : 'dark')
-  }, [])
-  const [currentTheme, setCurrentTheme] = useState("light");
-
-  return (
-    <Suspense fallback="...Loading">
-      <ThemeContext.Provider value={currentTheme}>
-        <div id={currentTheme} >
-          <nav>
-            <Switch defaultChecked onChange={themeModeHasChanged} />
-          </nav>
-          <Routes>
-            <Route path="/" element={<Register />} />
-            <Route path="/home" element={<Home />} />
-          </Routes>
-        </div>
-      </ThemeContext.Provider>
-    </Suspense>
-  );
+  const isAppRegistered = useSelector(isRegistered);
+  return isAppRegistered ? <AppRouter /> : <RegisterRouter />
 }

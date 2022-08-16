@@ -60,3 +60,11 @@ input {
     font-size: 12px;
     margin-left: 16px;
 }
+.text-form {
+    padding: 0 20px;
+    text-align: center;
+    color: gray;
+}
+#code {
+    margin: 0 auto !important;
+}

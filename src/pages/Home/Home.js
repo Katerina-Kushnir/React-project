@@ -1,13 +1,14 @@
-import React, { useState, useEffect, useContext, useCallback } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import './Home.css';
 import { weatherSelector } from "../../Store/App/selector";
-import { fetchSport, fetchWeatherByName, fetchAutocomplete, fetchHistoryWeather } from "../../Store/App/reduser";
-import { ThemeContext } from '../../App'
+import { fetchSport, fetchWeatherByName, fetchAutocomplete, fetchHistoryWeather } from "../../Store/App/thunks";
+import { ThemeContext } from '../AppRouter'
 import moment from "moment";
 import { useTranslation } from "react-i18next";
 import '../../utils/i18nex';
+import LogoutBtn from "../../components/Logout/Logout";
+import Account from "../../components/Account/Account";
 
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
@@ -20,7 +21,6 @@ import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
 import Settings from '@mui/icons-material/Settings';
-import Logout from '@mui/icons-material/Logout';
 import Modal from '@mui/material/Modal';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
@@ -64,15 +64,13 @@ const stylesContext = {
 
 function Home() {
     const dispatch = useDispatch();
-    const navigate = useNavigate();
 
     const { t, i18n } = useTranslation();
-    const changeLanguage = useCallback((lang) => {
+    const changeLanguage = (lang) => {
         i18n.changeLanguage(lang);
-    }, []);
+    }
 
     const getWeather = useSelector(weatherSelector);
-    // const [city, setCity] = useState("");
     const [degree, setDegree] = useState(null);
     const [windSpeed, setWindSpeed] = useState(null);
     const [pressure, setPressure] = useState(null);
@@ -80,37 +78,20 @@ function Home() {
     const [favoriteSport, setFavoriteSport] = useState([]);
     const [selectedCity, setSelectedCity] = useState(false);
     const [weatherHourly, setWeatherHourly] = useState("");
-    // const [historyDate, setHistoryDate] = useState("");
     const [cityForCalendar, setCityForCalendar] = useState();
     const [listOfFavoriteCity, setListOfFavoriteCity] = useState([]);
 
-    const logoutBtn = () => {
-        localStorage.clear();
-        navigate('/');
-    }
-    // const getCity = (event) => {
-    //     setCity(event.target.value);
-    // }
-    // const getCityWeather = () => {
-    //     dispatch(fetchWeatherByName(city));
-    // }
-    // const getSport = () => {
-    //     dispatch(fetchSport(city));
-    // }
     const degrees = (event) => {
-        // setDegree(event.target.value)
         localStorage.setItem("temperature", event.target.value);
         const temp = localStorage.getItem("temperature");
         setDegree(temp);
     }
     const windSpeedy = (event) => {
-        // setWindSpeed(event.target.value)
         localStorage.setItem("wind speed", event.target.value);
         const wind = localStorage.getItem("wind speed",);
         setWindSpeed(wind);
     }
     const pressures = (event) => {
-        // setPressure(event.target.value)
         localStorage.setItem("pressure", event.target.value);
         const pressure = localStorage.getItem("pressure");
         setPressure(pressure);
@@ -270,25 +251,6 @@ function Home() {
     const styles = stylesContext[theme];
     console.log("theme:", theme)
 
-
-    const getStorageFirstname = localStorage.getItem('firstname');
-    const [storageFirstname, setStorageFirstname] = useState(JSON.parse(getStorageFirstname));
-    const getStorageSurname = localStorage.getItem('surname');
-    const [storageSurname, setStorageSurname] = useState(JSON.parse(getStorageSurname));
-    const getStoragePhone = localStorage.getItem('phone')
-    const [storagePhone, setStoragePhone] = useState(JSON.parse(getStoragePhone));
-
-    const updateData = () => {
-        localStorage.setItem("firstname", JSON.stringify(storageFirstname));
-        localStorage.setItem("surname", JSON.stringify(storageSurname));
-        localStorage.setItem("phone", JSON.stringify(storagePhone));
-    }
-
-
-    const [openModal2, setOpenModal2] = React.useState(false);
-    const handleOpenModal2 = (event) => { event.stopPropagation(); setOpenModal2(true) };
-    const handleCloseModal2 = (event) => { event.stopPropagation(); setOpenModal2(false) };
-
     return (
         <div>
             <div style={styles.homePage}>
@@ -349,37 +311,7 @@ function Home() {
                         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                     >
-                        <MenuItem onClick={handleOpenModal2}>
-                            <Avatar /> {t("header.account")}
-                            <Modal
-                                open={openModal2}
-                                onClose={handleCloseModal2}
-                                aria-labelledby="modal-modal-title"
-                                aria-describedby="modal-modal-description"
-                            >
-                                <Box sx={style}>
-
-                                    <Typography id="modal-modal-title" variant="h6" component="h2">
-                                        {t("header.data")}
-                                    </Typography>
-                                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                        {t("header.firstname")}:
-                                        <input value={storageFirstname} onChange={(e) => setStorageFirstname(e.target.value)} />
-                                        <button className="button-save" onClick={() => updateData()} >{t("header.save")}</button>
-                                    </Typography>
-                                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                        {t("header.surname")}:
-                                        <input value={storageSurname} onChange={(e) => setStorageSurname(e.target.value)} />
-                                        <button className="button-save" onClick={() => updateData()} >{t("header.save")}</button>
-                                    </Typography>
-                                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                        {t("header.phone")}:
-                                        <input value={storagePhone} onChange={(e) => setStoragePhone(e.target.value)} />
-                                        <button className="button-save" onClick={() => updateData()} >{t("header.save")}</button>
-                                    </Typography>
-                                </Box>
-                            </Modal>
-                        </MenuItem>
+                        <Account/>
                         <Divider />
 
                         <MenuItem onClick={handleOpenModal}>
@@ -435,12 +367,7 @@ function Home() {
                             </Modal>
                         </MenuItem>
 
-                        <MenuItem onClick={() => logoutBtn()}>
-                            <ListItemIcon>
-                                <Logout fontSize="small" />
-                            </ListItemIcon>
-                            {t("header.logout")}
-                        </MenuItem>
+                        <LogoutBtn/>
                     </Menu>
 
                     <div className="homeTop">
@@ -511,10 +438,9 @@ function Home() {
                                             <p className="weather-data-temp">
                                                 {(degree === "F") ? getWeather.cityWeather.current?.temp_f + " °F" : ""}
                                                 {(degree === "C") ? getWeather.cityWeather.current?.temp_c + " °C" : ""}
-                                                {/* <span>&deg;</span> */}
                                             </p>
                                             <p className="weather-data-icon">
-                                                <img src={getWeather.cityWeather.current?.condition.icon} />
+                                                <img src={getWeather.cityWeather.current?.condition.icon} alt="img"/>
                                                 <span>{getWeather.cityWeather.current?.condition.text}</span>
                                             </p>
                                         </div>
@@ -523,7 +449,6 @@ function Home() {
                                         <p className="weather-day-right-data">{t("weather.feelslike")}............
                                             {(degree === "F") ? getWeather.cityWeather.current?.feelslike_f + " °F" : ""}
                                             {(degree === "C") ? getWeather.cityWeather.current?.feelslike_c + " °C" : ""}
-                                            {/* <span>&deg;</span> */}
                                         </p>
                                         <p className="weather-day-right-data">{t("weather.wind")}.....
                                             {(windSpeed === "kph") ? getWeather.cityWeather.current?.wind_kph + " kph" : ""}
@@ -542,7 +467,7 @@ function Home() {
                                         getWeather ? getWeather.cityWeather.forecast?.forecastday.map((day, index) => (
                                             <div key={day.date + index} className="one-day" onClick={() => getWeatherHourly(index)}>
                                                 <div>{day.date}</div>
-                                                <img src={day.day.condition.icon} />
+                                                <img src={day.day.condition.icon}  alt="img"/>
                                                 <div>{day.day.condition.text}</div>
                                                 <div className="days-temp">
                                                     <div>
@@ -550,7 +475,7 @@ function Home() {
                                                         <p className="days-temp-margin">
                                                             {(degree === "F") ? day.day.mintemp_f + " °F" : ""}
                                                             {(degree === "C") ? day.day.mintemp_c + " °C" : ""}
-                                                            {/* <span>&deg;</span> */}
+        
                                                         </p>
                                                     </div>
                                                     <div>
@@ -558,7 +483,6 @@ function Home() {
                                                         <p className="days-temp-margin">
                                                             {(degree === "F") ? day.day.maxtemp_f + " °F" : ""}
                                                             {(degree === "C") ? day.day.maxtemp_c + " °C" : ""}
-                                                            {/* <span>&deg;</span> */}
                                                         </p>
                                                     </div>
                                                 </div>
@@ -574,12 +498,11 @@ function Home() {
                                     weatherHourly ? weatherHourly.map((cityTime, i) => (
                                         <div key={(cityTime + i)} className="hour">
                                             <div className="hour-content">{cityTime.time}</div>
-                                            <div className="hour-content"><img src={cityTime.condition.icon} /><p>{cityTime.condition.text}</p></div>
+                                            <div className="hour-content"><img src={cityTime.condition.icon}  alt="img"/><p>{cityTime.condition.text}</p></div>
 
                                             <div className="hour-content">
                                                 {(degree === "F") ? cityTime.temp_f + " °F" : ""}
                                                 {(degree === "C") ? cityTime.temp_c + " °C" : ""}
-                                                {/* <span>&deg;</span> */}
                                             </div>
                                             <div className="hour-content">
                                                 {(windSpeed === "kph") ? cityTime.wind_kph + " kph" : ""}
@@ -616,11 +539,10 @@ function Home() {
                                                             <p>
                                                                 {(degree === "F") ? day.day.avgtemp_f + " °F" : ""}
                                                                 {(degree === "C") ? day.day.avgtemp_c + " °F" : ""}
-                                                                {/* <span>&deg;</span> */}
                                                             </p>
                                                         </div>
                                                         <div className="days-temp-history-col2">
-                                                            <img src={day.day.condition.icon} />
+                                                            <img src={day.day.condition.icon}  alt="img"/>
                                                             <p>{day.day.condition.text}</p>
                                                         </div>
                                                     </div>
@@ -715,9 +637,7 @@ function Home() {
                 </React.Fragment>
             </div>
         </div>
-
     );
 }
-
 
 export default Home;

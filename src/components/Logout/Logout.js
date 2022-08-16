@@ -1,20 +1,29 @@
 import React from "react";
-import Button from '@mui/material/Button';
-import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { MenuItem, ListItemIcon } from "@mui/material";
+import Logout from "@mui/icons-material/Logout";
+import { useDispatch } from "react-redux";
+import { setIsRegistered } from "../../Store/Register/action";
+import { useCallback } from "react";
 
-function Logout() {
-    const navigate = useNavigate();
+function LogoutBtn() {
+    const dispatch = useDispatch();
 
-    const logoutBtn = () => {
-        localStorage.clear();
-        navigate('/');
-    }
+    const { t } = useTranslation();
+
+    const logoutClick = useCallback(() => {
+        dispatch(setIsRegistered(false));
+        localStorage.setItem('isRegistered', false);
+    }, [ dispatch])
 
     return (
-        <div>
-            <Button onClick={() => logoutBtn()} variant="text">Logout</Button>
-        </div>
+        <MenuItem onClick={() => logoutClick()}>
+            <ListItemIcon>
+                <Logout fontSize="small" />
+            </ListItemIcon>
+            {t("header.logout")}
+        </MenuItem>
     )
 }
 
-export default Logout;
+export default LogoutBtn;

@@ -1,30 +1,12 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CardActions from '@mui/material/CardActions';
 import Button from '@mui/material/Button';
 import './Register.css';
-// import Box from '@mui/material/Box';
-// import Typography from '@mui/material/Typography';
-// import Modal from '@mui/material/Modal';
-
-
-// const style = {
-//     position: 'absolute',
-//     top: '50%',
-//     left: '50%',
-//     transform: 'translate(-50%, -50%)',
-//     width: 400,
-//     bgcolor: 'background.paper',
-//     border: '2px solid #000',
-//     boxShadow: 24,
-//     p: 4,
-// };
 
 function Register() {
     const navigate = useNavigate();
-
-    const [isLogin, setIsLogin] = useState(true);
 
     const [userEmail, setUserEmail] = useState({ email: "" });
     const [userPassword, setUserPassword] = useState({ password: "" });
@@ -46,49 +28,23 @@ function Register() {
 
     const [formValid, setFormValid] = useState(false);
 
-    const [signInUserEmail, setSignInUserEmail] = useState("");
-    const [signInUserPassword, setSignInUserPassword] = useState("");
+    const goToLogin = useCallback(() => {
+        navigate('/login');
+    }, [navigate])
 
-
-    const goToRegister = () => {
-        setIsLogin(false);
-    }
-
-    const goToLogin = () => {
-        setIsLogin(true);
-    }
-
-    const gotToApp = () => {
-        const getStorageEmail = localStorage.getItem("userEmail");
-        const getStoragePassword = localStorage.getItem("userPassword");
-
-        if (getStorageEmail) {
-            if (getStoragePassword) {
-                if (JSON.parse(getStorageEmail) === signInUserEmail && JSON.parse(getStoragePassword) === signInUserPassword) {
-                    alert("User successeful sign in");
-                    navigate('/home');
-                } else if (JSON.parse(getStorageEmail) !== signInUserEmail || JSON.parse(getStoragePassword) !== signInUserPassword) {
-                    alert("You entered incorrect data")
-                }
-            } else {
-                alert("You are not registred")
-            }
-        } else {
-            alert("You are not registred")
-        }
-    }
-
-    const registerUp = () => {
+    const registerUp = useCallback(() => {
+        localStorage.setItem('user', true)
         localStorage.setItem("firstname", JSON.stringify(firstname));
         localStorage.setItem("surname", JSON.stringify(surname));
         localStorage.setItem("phone", JSON.stringify(phone));
         localStorage.setItem("userEmail", JSON.stringify(userEmail));
         localStorage.setItem("userPassword", JSON.stringify(userPassword));
-        navigate('/');
-        alert("You have successfully registered. Go to login.")
-    }
 
-    const scrapDataEmail = (e) => {
+        alert("You have successfully registered. Go to login.")
+        navigate('/varification');
+    }, [navigate, firstname, surname, phone, userEmail, userPassword])
+
+    const scrapDataEmail = useCallback((e) => {
         setUserEmail(e.target.value)
         const re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
         if (!re.test(String(e.target.value).toLowerCase())) {
@@ -96,8 +52,8 @@ function Register() {
         } else {
             setEmailError("")
         }
-    }
-    const scrapDataPassword = (e) => {
+    }, [])
+    const scrapDataPassword = useCallback((e) => {
         setUserPassword(e.target.value)
         if (e.target.value.length < 3 || e.target.value.length > 8) {
             setPasswordError("Password must be less than 3 and longer than 8")
@@ -108,14 +64,8 @@ function Register() {
         else {
             setPasswordError("")
         }
-    }
-    const scrapSignInDataEmail = (e) => {
-        setSignInUserEmail(e.target.value)
-    }
-    const scrapSignInDataPassword = (e) => {
-        setSignInUserPassword(e.target.value)
-    }
-    const handlePhone = (e) => {
+    }, [])
+    const handlePhone = useCallback((e) => {
         setPhone(e.target.value)
         const reTel = /^\+\d{2}\(\d{3}\)\d{3}-\d{2}-\d{2}$/;
         if (!reTel.test(e.target.value)) {
@@ -123,8 +73,8 @@ function Register() {
         } else {
             setPhoneError("")
         }
-    }
-    const handleFirstname = (e) => {
+    }, [])
+    const handleFirstname = useCallback((e) => {
         setFirstname(e.target.value)
         const reTel = /^[a-zA-Z]+$/;
         if (!reTel.test(e.target.value)) {
@@ -132,8 +82,8 @@ function Register() {
         } else {
             setFirstnameError("")
         }
-    }
-    const handleSurname = (e) => {
+    }, [])
+    const handleSurname = useCallback((e) => {
         setSurname(e.target.value)
         const reTel = /^[a-zA-Z]+$/;
         if (!reTel.test(e.target.value)) {
@@ -141,10 +91,10 @@ function Register() {
         } else {
             setSurnameError("")
         }
-    }
-    const handleSubmit = (e) => {
+    }, [])
+    const handleSubmit = useCallback((e) => {
         e.preventDefault();
-    }
+    }, [])
 
     useEffect(() => {
         if (emailError || passwordError || phoneError || firstnameError || surnameError) {
@@ -154,7 +104,7 @@ function Register() {
         }
     }, [emailError, passwordError, phoneError, firstnameError, surnameError])
 
-    const blurHandler = (e) => {
+    const blurHandler = useCallback((e) => {
         switch (e.target.name) {
             case 'email':
                 setEmailDirty(true)
@@ -171,62 +121,33 @@ function Register() {
             case 'surname':
                 setSurnameDirty(true)
                 break
+            default: return e;
         }
-    }
-
-    // const [open, setOpen] = React.useState(false);
-    // const handleOpen = () => setOpen(true);
-    // const handleClose = () => setOpen(false);
+    }, [])
 
     return (
         <div className="registerPage">
             <div className="register-forma">
                 {
-                    isLogin ?
-                        <form className="forma" onSubmit={handleSubmit}>
-                            <input onChange={(e) => scrapSignInDataEmail(e)} placeholder="Email" name="email" type="email" />
-                            <input onChange={(e) => scrapSignInDataPassword(e)} placeholder="Password" name="password" type="password" />
-                            <CardActions>
-                                <Button onClick={() => gotToApp()} size="small" variant="contained">Sign In</Button>
-                                <Button onClick={() => goToRegister()} size="small" variant="contained">Register</Button>
-                            </CardActions>
-                        </form> :
-                        <form className="forma" onSubmit={handleSubmit}>
-                            {(firstnameDirty && firstnameError) && <div className="error">{firstnameError}</div>}
-                            <input onBlur={e => blurHandler(e)} onChange={(e) => handleFirstname(e)} placeholder="First name" name="firstname" type="text" required="required" />
-                            {(surnameDirty && surnameError) && <div className="error">{surnameError}</div>}
-                            <input onBlur={e => blurHandler(e)} onChange={(e) => handleSurname(e)} placeholder="Surname" name="surname" type="text" required="required" />
-                            {(phoneDirty && phoneError) && <div className="error">{phoneError}</div>}
-                            <input onBlur={e => blurHandler(e)} onChange={(e) => handlePhone(e)} placeholder="Phone +xx(xxx)xxx-xx-xx" type="tel" name="phone" />
-                            {(emailDirty && emailError) && <div className="error">{emailError}</div>}
-                            <input onBlur={e => blurHandler(e)} onChange={(e) => scrapDataEmail(e)} placeholder="Email" name="email" type="email" />
-                            {(passwordDirty && passwordError) && <div className="error">{passwordError}</div>}
-                            <input onBlur={e => blurHandler(e)} onChange={(e) => scrapDataPassword(e)} placeholder="Password" name="password" type="password" />
-                            <CardActions>
-                                <Button disabled={!formValid} onClick={() => registerUp()} size="small" variant="contained">Login</Button>
-                                <Button onClick={() => goToLogin()} size="small" variant="contained">Got to login</Button>
-                            </CardActions>
-                                {/* <Modal
-                                open={open}
-                                onClose={handleClose}
-                                aria-labelledby="modal-modal-title"
-                                aria-describedby="modal-modal-description"
-                            >
-                                <Box sx={style}>
-                                <Typography id="modal-modal-title" variant="h6" component="h2">
-                                    Text in a modal
-                                </Typography>
-                                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                    Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-                                </Typography>
-                                </Box>
-                            </Modal> */}
-                        </form>
-
+                    <form className="forma" onSubmit={handleSubmit}>
+                        {(firstnameDirty && firstnameError) && <div className="error">{firstnameError}</div>}
+                        <input onBlur={e => blurHandler(e)} onChange={(e) => handleFirstname(e)} placeholder="First name" name="firstname" type="text" required="required" />
+                        {(surnameDirty && surnameError) && <div className="error">{surnameError}</div>}
+                        <input onBlur={e => blurHandler(e)} onChange={(e) => handleSurname(e)} placeholder="Surname" name="surname" type="text" required="required" />
+                        {(phoneDirty && phoneError) && <div className="error">{phoneError}</div>}
+                        <input onBlur={e => blurHandler(e)} onChange={(e) => handlePhone(e)} placeholder="Phone +xx(xxx)xxx-xx-xx" type="tel" name="phone" />
+                        {(emailDirty && emailError) && <div className="error">{emailError}</div>}
+                        <input onBlur={e => blurHandler(e)} onChange={(e) => scrapDataEmail(e)} placeholder="Email" name="email" type="email" />
+                        {(passwordDirty && passwordError) && <div className="error">{passwordError}</div>}
+                        <input onBlur={e => blurHandler(e)} onChange={(e) => scrapDataPassword(e)} placeholder="Password" name="password" type="password" />
+                        <CardActions>
+                            <Button disabled={!formValid} onClick={() => registerUp()} size="small" variant="contained">Login</Button>
+                            <Button onClick={() => goToLogin()} size="small" variant="contained">Got to login</Button>
+                        </CardActions>
+                    </form>
                 }
             </div>
         </div>
-
     );
 }
 
