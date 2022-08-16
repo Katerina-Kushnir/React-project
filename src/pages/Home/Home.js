@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import '../../utils/i18nex';
 import LogoutBtn from "../../components/Logout/Logout";
 import Account from "../../components/Account/Account";
+import Sport from "../../components/Sport/Sport";
 
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
@@ -75,7 +76,7 @@ function Home() {
     const [windSpeed, setWindSpeed] = useState(null);
     const [pressure, setPressure] = useState(null);
     const [favoriteCity, setFavoriteCity] = useState("");
-    const [favoriteSport, setFavoriteSport] = useState([]);
+    // const [favoriteSport, setFavoriteSport] = useState([]);
     const [selectedCity, setSelectedCity] = useState(false);
     const [weatherHourly, setWeatherHourly] = useState("");
     const [cityForCalendar, setCityForCalendar] = useState();
@@ -125,24 +126,24 @@ function Home() {
         localStorage.setItem("favoriteCities", JSON.stringify(newListOfFavoriteCity));
     }
 
-    const addFavoriteSport = (tournament) => {
-        localStorage.setItem("favoriteSport", JSON.stringify([...favoriteSport, tournament]));
-        setFavoriteSport([...favoriteSport, tournament]);
-    }
-    const deleteFavoriteSport = (tournament) => {
-        const newFavoriteSport = favoriteSport?.filter(sport => sport !== tournament)
-        setFavoriteSport(newFavoriteSport);
-        localStorage.setItem('favoriteSport', JSON.stringify(newFavoriteSport));
-    }
-    const favorSport = localStorage.getItem("favoriteSport");
-    const myfavorSport = JSON.parse(favorSport)
-    useEffect(() => {
+    // const addFavoriteSport = (tournament) => {
+    //     localStorage.setItem("favoriteSport", JSON.stringify([...favoriteSport, tournament]));
+    //     setFavoriteSport([...favoriteSport, tournament]);
+    // }
+    // const deleteFavoriteSport = (tournament) => {
+    //     const newFavoriteSport = favoriteSport?.filter(sport => sport !== tournament)
+    //     setFavoriteSport(newFavoriteSport);
+    //     localStorage.setItem('favoriteSport', JSON.stringify(newFavoriteSport));
+    // }
+    // const favorSport = localStorage.getItem("favoriteSport");
+    // const myfavorSport = JSON.parse(favorSport)
+    // useEffect(() => {
 
-        console.log("favorSport", favorSport)
-        if (favorSport) {
-            setFavoriteSport(myfavorSport);
-        }
-    }, [])
+    //     console.log("favorSport", favorSport)
+    //     if (favorSport) {
+    //         setFavoriteSport(myfavorSport);
+    //     }
+    // }, [])
 
     const getCityAutocomplete = (event) => {
         dispatch(fetchWeatherByName(event.target.textContent));
@@ -221,13 +222,13 @@ function Home() {
         setWeatherHourly(hourly);
     }, [getWeather])
 
-    useEffect(() => {
-        dispatch(fetchSport("London"));
-    }, [dispatch])
+    // useEffect(() => {
+    //     dispatch(fetchSport("London"));
+    // }, [dispatch])
 
-    useEffect(() => {
-        console.log("Sport", getWeather.sports);
-    })
+    // useEffect(() => {
+    //     console.log("Sport", getWeather.sports);
+    // })
 
     useEffect(() => {
         dispatch(fetchAutocomplete(""));
@@ -585,7 +586,7 @@ function Home() {
                             </div>
                         </div>
 
-                        <div className="home-content-right">
+                        {/* <div className="home-content-right">
                             <div className="tournament">
                                 <p className="tournament-p">{t("sport.allSport")}: {getWeather.cityWeather.error ? "City not found" : getWeather.cityWeather ? getWeather.cityWeather.location?.name : ""}, {getWeather.cityWeather.error ? "Country not found" : getWeather.cityWeather ? getWeather.cityWeather.location?.country : ""}</p>
                                 <div className="tournament-block">
@@ -631,7 +632,8 @@ function Home() {
                                     </div>
                                 ))}
                             </div>
-                        </div>
+                        </div> */}
+                        <Sport/>
                     </div>
 
                 </React.Fragment>
